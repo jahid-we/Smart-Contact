@@ -11,7 +11,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 3px !important; /* Custom height */
+    height: 4px !important; /* Custom height */
   }
 
   #nprogress .peg {

@@ -14,7 +14,7 @@ import { Link } from "@inertiajs/vue3";
       <p class="lead mb-4">
         Easily create, organize, and manage contacts like never before.
       </p>
-      <Link href="/register" class="btn btn-light btn-lg"><i class="bi bi-person-plus-fill me-1"></i>Get Started Now</Link>
+      <Link href="/loginForm" class="btn btn-light btn-lg"><i class="bi bi-person-plus-fill me-1"></i>Get Started Now</Link>
     </div>
   </section>
 
