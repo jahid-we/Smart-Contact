@@ -1,8 +1,9 @@
 <?php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Page\HomePageController;
+
 use App\Http\Controllers\Page\AuthenticationPageController;
+use App\Http\Controllers\Page\DashboardPageController;
+use App\Http\Controllers\Page\HomePageController;
+use Illuminate\Support\Facades\Route;
 
 // =========================================================
 // =============== Home Page  Routes ====================
@@ -20,5 +21,14 @@ Route::controller(AuthenticationPageController::class)->group(function () {
 
     Route::get('/LoginForm', 'LoginForm')->name('loginForm');
     Route::get('/OtpForm', 'OtpForm')->name('otpForm');
+
+});
+
+// =========================================================
+// =============== Dashboard Page  Routes ====================
+// =========================================================
+Route::controller(DashboardPageController::class)->group(function () {
+
+    Route::get('/dashboard', 'Dashboard')->name('dashboard');
 
 });

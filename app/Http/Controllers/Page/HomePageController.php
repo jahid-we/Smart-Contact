@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Page;
 
-use Inertia\Response;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class HomePageController extends Controller
 {

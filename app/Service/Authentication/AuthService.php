@@ -80,7 +80,12 @@ class AuthService
 
                     $token = JWTToken::createToken($userEmail, $user->id, $user->role);
 
-                    return ResponseHelper::Out(true, 'OTP Verification Success', 200)->cookie('token', $token, 60 * 24, null, null, true, true, false, 'Strict');
+                    return ResponseHelper::Out(true, 'OTP Verification Success', 200)
+                    ->withCookie(cookie()->make('token', $token, 60 * 24)
+                    ->withSecure(true)
+                    ->withHttpOnly(true)
+                    ->withSameSite('lax'));
+
                 } else {
                     return ResponseHelper::Out(false, 'OTP expired. Please request a new one.', 408);
                 }
@@ -112,7 +117,7 @@ class AuthService
             $id = $request->header('id');
             User::where('id', $id)->where('email', $email)->update(['is_logged_in' => false]);
             $response = ResponseHelper::Out(true, 'Logout successful', 200)
-                ->cookie('token', '', -1, null, null, true, true, false, 'Strict');
+                ->cookie('token', '', -1);
 
             return $response;
         } catch (Exception $e) {

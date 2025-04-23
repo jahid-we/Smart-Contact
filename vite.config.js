@@ -12,4 +12,13 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    server: {
+        host: 'cms-contact_management_system.test',
+        port: 5173,
+        hmr: {
+            protocol: 'wss',
+            host: 'cms-contact_management_system.test',
+            port: 5173,
+        },
+    },
 });

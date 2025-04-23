@@ -2,7 +2,7 @@
 import FeaturesComp from "../../Components/FeaturesComp.vue";
 import ContactComp from "../../Components/ContactComp.vue";
 import FooterComp from "../../Components/FooterComp.vue";
-import { successToast, errorToast } from '@/utils/toast'
+import { successToast, errorToast } from "@/utils/toast";
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
 import axios from "axios";
@@ -30,12 +30,16 @@ const verifyOTP = async () => {
             return;
         }
 
-        let res = await axios.post("api/auth/verify-otp", {
-            email: email,
-            otp: otp.value,
-        },{
-            withCredentials: true
-        });
+        let res = await axios.post(
+            "api/auth/verify-otp",
+            {
+                email: email,
+                otp: otp.value,
+            },
+            {
+                withCredentials: true
+            }
+        );
         if (res.data.status === true) {
             localStorage.removeItem("email");
             successToast(res.data.data);
@@ -62,8 +66,8 @@ const Back = () => {
 
 // Back To Home Page
 const Home = () => {
-    router.visit('/');
-}
+    router.visit("/");
+};
 </script>
 
 <template>
