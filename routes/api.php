@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Route;
 // =====================================================
 // =============== Authentication Routes ===============
 // =====================================================
-Route::controller(AuthController::class)
+Route::middleware('web')->controller(AuthController::class)
     ->prefix('auth')
     ->name('auth.')
     ->group(function () {
         Route::post('/login', 'userLogin')->name('login');           // Authenticate user using email
         Route::post('/verify-otp', 'verifyOTP')->name('verify-otp'); // Verify OTP for authentication
-        Route::middleware('authenticationToken')->get('/logout', 'logout')->name('logout'); // Logout
+        Route::middleware('sessionAuth')->get('/logout', 'logout')->name('logout'); // Logout
     });
 
 // =========================================================
 // =============== Contact Management Routes ===============
 // =========================================================
-Route::middleware('authenticationToken')
+Route::middleware(['sessionAuth', 'web'])
     ->controller(ContactController::class)
     ->prefix('contact')
     ->name('contact.')
@@ -38,7 +38,7 @@ Route::middleware('authenticationToken')
 // =========================================================
 // =============== User Profile Routes ====================
 // =========================================================
-Route::middleware('authenticationToken')
+Route::middleware('sessionAuth')
     ->controller(userProfileController::class)
     ->prefix('profile')
     ->name('profile.')
@@ -53,7 +53,7 @@ Route::middleware('authenticationToken')
 // =========================================================
 // =============== User Management Routes ====================
 // =========================================================
-Route::middleware(['authenticationToken', 'admin'])
+Route::middleware(['sessionAuth', 'admin'])
     ->controller(userController::class)
     ->prefix('user')
     ->name('user.')

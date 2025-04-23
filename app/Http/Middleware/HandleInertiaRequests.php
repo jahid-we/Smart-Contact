@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,12 +36,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $email = $request->session()->get('email');
+        $id = $request->session()->get('id');
+
+        $user =User::where('email', $email)
+        ->where('id', $id)
+        ->select('is_logged_in')
+        ->first();
+
         return array_merge(parent::share($request), [
-            'flash'=>[
-                'message'=> fn() => $request->session()->pull('message'),
-                'status'=> fn() => $request->session()->pull('status'),
-                'error'=> fn() => $request->session()->pull('error'),
-            ]
-        ]);
+        'flash' => [
+            'message' => fn() => $request->session()->pull('message'),
+            'status'  => fn() => $request->session()->pull('status'),
+            'error'   => fn() => $request->session()->pull('error'),
+        ],
+        'is_logged_in' => $user->is_logged_in ?? false,
+    ]);
     }
 }

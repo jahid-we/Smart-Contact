@@ -1,5 +1,8 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+import { usePage } from '@inertiajs/vue3';
+
+const { is_logged_in } = usePage().props;
 </script>
 
 <template>
@@ -37,9 +40,17 @@ import { Link } from "@inertiajs/vue3";
                             ><i class="bi bi-envelope me-1"></i>Contact</Link
                         >
                     </li>
-                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        <Link class="btn btn-light" href="/LoginForm">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                     <!-- Authenticated -->
+                     <li v-if="is_logged_in" class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <Link href="/dashboard" class="btn btn-light">
+                            <i class="bi bi-house-door-fill me-1"></i> Dashboard
+                        </Link>
+                    </li>
+
+                    <!-- Guest -->
+                    <li v-else class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <Link href="/LoginForm" class="btn btn-light">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
                         </Link>
                     </li>
                 </ul>

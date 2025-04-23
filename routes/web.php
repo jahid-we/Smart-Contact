@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 // =========================================================
 // =============== Home Page  Routes ====================
 // =========================================================
-Route::controller(HomePageController::class)->group(function () {
+Route::middleware('sessionAuth')->controller(HomePageController::class)->group(function () {
 
     Route::get('/', 'Home')->name('home');
 
@@ -17,18 +17,19 @@ Route::controller(HomePageController::class)->group(function () {
 // =========================================================
 // =============== Authentication Page  Routes ====================
 // =========================================================
-Route::controller(AuthenticationPageController::class)->group(function () {
+Route::middleware('guest')->controller(AuthenticationPageController::class)->group(function () {
 
-    Route::get('/LoginForm', 'LoginForm')->name('loginForm');
-    Route::get('/OtpForm', 'OtpForm')->name('otpForm');
+    Route::get('/LoginForm', 'LoginForm')->name('LoginForm');
+    Route::get('/OtpForm', 'OtpForm')->name('OtpForm');
 
 });
 
 // =========================================================
 // =============== Dashboard Page  Routes ====================
 // =========================================================
-Route::controller(DashboardPageController::class)->group(function () {
+Route::middleware('sessionAuth')->controller(DashboardPageController::class)->group(function () {
 
     Route::get('/dashboard', 'Dashboard')->name('dashboard');
+    Route::get('/contact', 'Contact')->name('contact');
 
 });

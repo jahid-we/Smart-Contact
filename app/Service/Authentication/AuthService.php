@@ -2,7 +2,6 @@
 
 namespace App\Service\authentication;
 
-use App\Helpers\JWTToken;
 use App\Helpers\ResponseHelper;
 use App\Models\User;
 use App\Notifications\OTPNotification;
@@ -78,13 +77,10 @@ class AuthService
                         ->where('otp', $OTP)
                         ->update(['otp' => '0', 'otp_created_at' => null, 'is_logged_in' => true]);
 
-                    $token = JWTToken::createToken($userEmail, $user->id, $user->role);
-
-                    return ResponseHelper::Out(true, 'OTP Verification Success', 200)
-                    ->withCookie(cookie()->make('token', $token, 60 * 24)
-                    ->withSecure(true)
-                    ->withHttpOnly(true)
-                    ->withSameSite('lax'));
+                    $request->session()->put('email', $userEmail);
+                    $request->session()->put('role', $user->role);
+                    $request->session()->put('id', $user->id);
+                    return ResponseHelper::Out(true, 'OTP Verified', 200);
 
                 } else {
                     return ResponseHelper::Out(false, 'OTP expired. Please request a new one.', 408);
@@ -113,13 +109,15 @@ class AuthService
     public function logout($request)
     {
         try {
-            $email = $request->header('email');
-            $id = $request->header('id');
-            User::where('id', $id)->where('email', $email)->update(['is_logged_in' => false]);
-            $response = ResponseHelper::Out(true, 'Logout successful', 200)
-                ->cookie('token', '', -1);
-
-            return $response;
+            $user = User::where('email', $request->session()->get('email'))->first();
+            if ($user) {
+                $user->update(['is_logged_in' => false]);
+                $request->session()->forget('email');
+                $request->session()->forget('role');
+                $request->session()->forget('id');
+                return ResponseHelper::Out(true, 'Logout Success', 200);
+            }
+            return ResponseHelper::Out(false, 'Logout Failed', 500);
         } catch (Exception $e) {
             return ResponseHelper::Out(false, 'Logout Failed', 500);
         }

@@ -12,14 +12,15 @@ class DashboardPageController extends Controller
     // Dashboard Page Start ********************************
     public function Dashboard(Request $request): Response
     {
-        dd($request->cookies->all()); // Debugging cookies
-
-        if ($request->cookie('token')) {
-            return Inertia::render('DashboardPages/Dashboard');
-        } else {
-            return Inertia::render('AuthenticationPages/LoginForm');
-        }
+        return Inertia::render('DashboardPages/Dashboard');
 
     }
     // Dashboard Page End ********************************
+
+    // Contact Page Start ********************************
+    public function Contact(Request $request): Response
+    {
+        return Inertia::render('DashboardPages/ContactPage');
+    }
+    // Contact Page End ********************************
 }

@@ -1,45 +1,45 @@
 <script setup>
+import { ref } from "vue";
+import axios from "axios";
+import { router } from "@inertiajs/vue3";
+import { successToast, errorToast } from "@/utils/toast";
+
 import FeaturesComp from "../../Components/FeaturesComp.vue";
 import ContactComp from "../../Components/ContactComp.vue";
 import FooterComp from "../../Components/FooterComp.vue";
-import { successToast, errorToast } from "@/utils/toast";
-import { ref } from "vue";
-import { router } from "@inertiajs/vue3";
-import axios from "axios";
 
+// State
 const otp = ref("");
-const loading = ref(false); // Controls the loading state
+const loading = ref(false);
 
-// Verify OTP Functionality
-
+// Verify OTP Function
 const verifyOTP = async () => {
-    loading.value = true; // Set loading state to prevent multiple clicks
+    loading.value = true;
+
     try {
-        let email = localStorage.getItem("email"); // Get email from localStorage
+        const email = localStorage.getItem("email");
+
         if (!email) {
             errorToast("Email not found");
-            loading.value = false;
-            return;
-        } else if (!otp.value.trim()) {
-            errorToast("Please enter your 6 digit verification code");
-            loading.value = false;
-            return;
-        } else if (otp.value.length !== 6) {
-            errorToast("Verification code must be 6 digits");
-            loading.value = false;
             return;
         }
 
-        let res = await axios.post(
+        if (!otp.value.trim()) {
+            errorToast("Please enter your 6 digit verification code");
+            return;
+        }
+
+        if (otp.value.length !== 6) {
+            errorToast("Verification code must be 6 digits");
+            return;
+        }
+
+        const res = await axios.post(
             "api/auth/verify-otp",
-            {
-                email: email,
-                otp: otp.value,
-            },
-            {
-                withCredentials: true
-            }
+            { email, otp: otp.value },
+            { withCredentials: true }
         );
+
         if (res.data.status === true) {
             localStorage.removeItem("email");
             successToast(res.data.data);
@@ -47,56 +47,54 @@ const verifyOTP = async () => {
                 router.visit("/dashboard");
             }, 1000);
         } else {
-            errorToast(res.data.data);
+            errorToast(res.data.data || "Invalid OTP. Please try again.");
         }
     } catch (error) {
-        // Handle any API errors and display a meaningful message
-        errorToast(
-            error.response?.data?.data || "An error occurred. Please try again."
-        );
+        if (error.response?.status === 408) {
+            errorToast("OTP expired.Redirecting to login page...");
+            setTimeout(() => {
+                router.visit("/LoginForm");
+            }, 1500);
+        } else {
+            const message =
+                error.response?.data?.data || "An error occurred. Please try again.";
+            errorToast(message);
+        }
     } finally {
         loading.value = false;
     }
 };
 
-// Back To Previous Page
-const Back = () => {
-    window.history.back();
-};
-
-// Back To Home Page
-const Home = () => {
-    router.visit("/");
-};
+// Navigation Handlers
+const Back = () => window.history.back();
+const Home = () => router.visit("/");
 </script>
 
 <template>
     <div
         class="d-flex align-items-center justify-content-center"
-        style="
-            min-height: 100vh;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
-        "
+        style="min-height: 100vh; background: linear-gradient(to right, #00c6ff, #0072ff);"
     >
         <div class="w-100" style="max-width: 400px">
-            <!-- Back Button -->
-            <button
-                @click.prevent="Back"
-                :disabled="loading"
-                class="btn btn-outline-light mb-3"
-            >
-                <i class="bi bi-arrow-left"></i> Back
-            </button>
-            <!-- Back To Home Button -->
-            <button
-                @click.prevent="Home"
-                :disabled="loading"
-                class="btn btn-outline-light mx-3 mb-3"
-            >
-                <i class="bi bi-arrow-left"></i> Home
-            </button>
+            <!-- Back & Home Buttons -->
+            <div class="mb-3 d-flex">
+                <button
+                    @click.prevent="Back"
+                    :disabled="loading"
+                    class="btn btn-outline-light me-2"
+                >
+                    <i class="bi bi-arrow-left"></i> Back
+                </button>
+                <button
+                    @click.prevent="Home"
+                    :disabled="loading"
+                    class="btn btn-outline-light"
+                >
+                    <i class="bi bi-house-door-fill"></i> Home
+                </button>
+            </div>
 
-            <!-- Login Card -->
+            <!-- OTP Card -->
             <div class="card p-4">
                 <h3 class="text-center mb-4">Verify OTP</h3>
                 <form @submit.prevent="verifyOTP">
@@ -122,23 +120,19 @@ const Home = () => {
                         class="btn btn-primary w-100"
                         :disabled="loading"
                     >
-                        <span
-                            v-if="loading"
-                            class="spinner-border spinner-border-sm"
-                        ></span>
-                        <span v-else> Verify OTP</span>
+                        <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                        <span v-else>
+                            <i class="bi bi-check-circle-fill me-1"></i> Verify OTP
+                        </span>
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Features -->
+    <!-- Additional Sections -->
     <features-comp />
-    <!-- Contact -->
     <contact-comp />
-
-    <!-- Footer -->
     <footer-comp />
 </template>
 
