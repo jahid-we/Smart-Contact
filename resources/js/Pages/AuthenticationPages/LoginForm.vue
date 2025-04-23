@@ -1,8 +1,8 @@
 <script setup>
-import { successToast, errorToast } from '@/utils/toast'
 import FeaturesComp from "../../Components/FeaturesComp.vue";
 import ContactComp from "../../Components/ContactComp.vue";
 import FooterComp from "../../Components/FooterComp.vue";
+import { successToast, errorToast } from '@/utils/toast';
 import {ref} from "vue";
 import {router} from "@inertiajs/vue3";
 import axios from "axios";
@@ -88,7 +88,7 @@ const Home = () => {
                 />
               </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100" :disabled="loading" @click.prevent="sendOTP">
+            <button type="submit" class="btn btn-primary w-100" :disabled="loading">
                 <span v-if="loading" class="spinner-border spinner-border-sm"></span>
                 <span v-else> Send OTP</span>
             </button>
