@@ -109,21 +109,15 @@ class ContactService
             // Validate input
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email',
-                'phone' => 'nullable|string|max:20',
+                'email' => 'required|email|unique:contacts,email,' . $contactId,
+                'phone' => 'nullable|string|max:20|unique:contacts,phone,' . $contactId,
                 'address' => 'nullable|string|max:255',
                 'nationality' => 'nullable|string|max:100',
                 'gender' => 'nullable|in:male,female,other',
                 'dob' => 'nullable|date',
                 'designation' => 'nullable|string|max:100',
             ]);
-            // Check duplicates manually (optional if validation doesn't cover unique)
-            $exists = Contact::where('email', $validated['email'])
-                ->orWhere('phone', $validated['phone'])
-                ->first();
-            if ($exists && $exists->id != $contactId) {
-                return ResponseHelper::Out(false, 'Contact email or phone already exists', 400);
-            }
+
             Contact::where('id', $contactId)->update($validated);
 
             return ResponseHelper::Out(true, 'Contact Updated Successfully', 200);

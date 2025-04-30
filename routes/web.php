@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Page\AuthenticationPageController;
-use App\Http\Controllers\Page\DashboardPageController;
-use App\Http\Controllers\Page\HomePageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Page\HomePageController;
+use App\Http\Controllers\Page\ContactPageController;
+use App\Http\Controllers\Page\DashboardPageController;
+use App\Http\Controllers\Page\AuthenticationPageController;
 
 // =========================================================
 // =============== Home Page  Routes ====================
@@ -30,6 +31,14 @@ Route::middleware('guest')->controller(AuthenticationPageController::class)->gro
 Route::middleware('sessionAuth')->controller(DashboardPageController::class)->group(function () {
 
     Route::get('/dashboard', 'Dashboard')->name('dashboard');
+    Route::get('/contact', 'Contact')->name('contact');
+
+});
+// =========================================================
+// =============== Contact Page  Routes ====================
+// =========================================================
+Route::middleware('sessionAuth')->controller(ContactPageController::class)->group(function () {
+
     Route::get('/contact', 'Contact')->name('contact');
 
 });

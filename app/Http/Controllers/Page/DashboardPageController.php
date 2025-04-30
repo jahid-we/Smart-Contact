@@ -17,10 +17,5 @@ class DashboardPageController extends Controller
     }
     // Dashboard Page End ********************************
 
-    // Contact Page Start ********************************
-    public function Contact(Request $request): Response
-    {
-        return Inertia::render('DashboardPages/ContactPage');
-    }
-    // Contact Page End ********************************
+   
 }
