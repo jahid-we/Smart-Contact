@@ -1,5 +1,15 @@
 <script setup>
+import { ref } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import UserProfileComp from '../UserProfileComp/UserProfileComp.vue';
 defineProps(['toggleSidebar']);
+
+const profileModalVisible = ref(false);
+
+const handleProfile = () => {
+  profileModalVisible.value = true;
+};
+
 </script>
 
 <template>
@@ -12,16 +22,16 @@ defineProps(['toggleSidebar']);
       <div class="ms-auto">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <a
+            <Link
               class="nav-link dropdown-toggle text-white"
               href="#"
               role="button"
               data-bs-toggle="dropdown"
             >
               <i class="bi bi-person-circle me-1"></i>Admin
-            </a>
+            </Link>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+              <li><Link @click.prevent="handleProfile" class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</Link></li>
               <li><hr class="dropdown-divider" /></li>
               <li>
                 <form method="POST" action="/logout">
@@ -36,6 +46,12 @@ defineProps(['toggleSidebar']);
       </div>
     </div>
   </nav>
+ <user-profile-comp
+  :visible="profileModalVisible"
+  @cancel="profileModalVisible = false"
+  @updated="() => { profileModalVisible = false }"
+  @created="() => { profileModalVisible = false}"
+ />
 </template>
 
 <style scoped>

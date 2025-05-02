@@ -1,93 +1,64 @@
 <script setup>
-  import { reactive, watch } from 'vue'
+  import {ref, watch } from 'vue'
   import axios from 'axios'
   import { successToast, errorToast } from '@/utils/toast'
 
   const props = defineProps({
     visible: Boolean,
-    contact: Object, // coming from parent
+    deleteId: Number, // coming from parent
   })
 
-  const emit = defineEmits(['cancel', 'updated'])
+  const newDeleteId = ref(null);
 
-  const localContact = reactive({
-    id: '',
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    nationality: '',
-    gender: '',
-    dob: '',
-    designation: '',
-  })
+ const emit = defineEmits(['cancel', 'deleted']);
 
-  // Sync when modal opens
-  watch(
-    () => props.contact,
-    (newContact) => {
-      if (newContact) {
-        Object.assign(localContact, newContact)
+ watch(
+    () => props.deleteId,
+    (newId) => {
+      if (newId) {
+        newDeleteId.value = newId
       }
     },
     { immediate: true, deep: true }
   )
 
-  const handleUpdate = async () => {
-    if (!localContact.name || !localContact.phone || !localContact.email) {
-      errorToast('Please fill in all required fields')
-      return
-    }
-
+  const handleDelete = async () => {
     try {
-      const res = await axios.post(`api/contact/update/${localContact.id}`, localContact)
-
+      const res = await axios.post('api/contact/delete',{ id: newDeleteId.value });
       if (res.data.status === true) {
         successToast(res.data.data)
-        emit('updated') // trigger parent to refresh and close modal
+        emit('deleted') // trigger parent to refresh and close modal
       } else {
         errorToast(res.data.data)
       }
     } catch (error) {
-      console.error('Update Error:', error)
+      console.error('Delete Error:', error)
       errorToast(
-        error?.response?.data?.data || 'Failed to update contact.'
+        error?.response?.data?.data || 'Failed to delete contact.'
       )
     }
   }
-  </script>
+
+
+</script>
+
 <template>
-    <div v-if="visible" class="modal-mask">
+ <div v-if="visible" class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <h3>Edit Contact</h3>
-
+          <h3>Do you really want to delete this contact?</h3>
           <div class="modal-body">
-            <input v-model="localContact.name" placeholder="Name" class="form-control mb-2" />
-            <input v-model="localContact.phone" placeholder="Phone" class="form-control mb-2" />
-            <input v-model="localContact.email" placeholder="Email" class="form-control mb-2" />
-            <input v-model="localContact.address" placeholder="Address" class="form-control mb-2" />
-            <input v-model="localContact.nationality" placeholder="Nationality" class="form-control mb-2" />
-            <select v-model="localContact.gender" class="form-control mb-2">
-              <option disabled value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-            <input v-model="localContact.dob" type="date" class="form-control mb-2" />
-            <input v-model="localContact.designation" placeholder="Designation" class="form-control mb-2" />
+            <p>This action is permanent and cannot be undone. ⚠️</p>
           </div>
 
           <div class="modal-footer d-flex gap-2 justify-end">
             <button @click="$emit('cancel')" class="btn btn-secondary"><i class="bi bi-x-circle me-1"></i>Cancel</button>
-            <button @click="handleUpdate" class="btn btn-primary">Update</button>
+            <button @click="handleDelete" class="btn btn-primary">Delete</button>
           </div>
         </div>
       </div>
     </div>
-  </template>
-
-
+</template>
 
 <style scoped>
 .modal-mask {
@@ -196,5 +167,4 @@
 .modal-footer .btn-primary:hover {
   background-color: #4338ca;
 }
-
 </style>
