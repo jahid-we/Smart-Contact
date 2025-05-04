@@ -21,7 +21,7 @@ import { Link } from '@inertiajs/vue3'
       </li>
       <li class="nav-item mb-2">
         <Link class="nav-link text-white" href="/clients">
-          <i class="bi bi-people me-2"></i>Clients
+          <i class="bi bi-people me-2"></i>User
         </Link>
       </li>
       <li class="nav-item mb-2">

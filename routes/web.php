@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomePageController;
 use App\Http\Controllers\Page\ContactPageController;
 use App\Http\Controllers\Page\DashboardPageController;
+use App\Http\Controllers\Page\UserProfilePageController;
 use App\Http\Controllers\Page\AuthenticationPageController;
 
 // =========================================================
@@ -40,5 +41,14 @@ Route::middleware('sessionAuth')->controller(DashboardPageController::class)->gr
 Route::middleware('sessionAuth')->controller(ContactPageController::class)->group(function () {
 
     Route::get('/contact', 'Contact')->name('contact');
+
+});
+
+// =========================================================
+// =============== User profile Page  Routes ====================
+// =========================================================
+Route::middleware('sessionAuth')->controller(UserProfilePageController::class)->group(function () {
+
+    Route::get('/userProfile', 'UserProfile')->name('userProfile');
 
 });

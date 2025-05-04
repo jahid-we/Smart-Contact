@@ -1,138 +1,201 @@
 <script setup>
-  import {ref} from 'vue'
-  import axios from 'axios'
-  import { successToast, errorToast } from '@/utils/toast'
+import { ref, onMounted } from 'vue'
+import { router } from '@inertiajs/vue3'
+import axios from 'axios'
+import { successToast, errorToast } from '@/utils/toast'
 
-  const props = defineProps({
-    visible: Boolean
-  })
+const props = defineProps({
+  visible: Boolean
+})
+const profileData = ref({
+  name: '',
+  phone: '',
+  email: '',
+  address: '',
+  img_url: ''
+})
 
-  const emit = defineEmits(['cancel', 'deleted','created'])
+const showEmailField = ref(false)
+const profileFile = ref(null)
+const loading = ref(false)
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    profileFile.value = file
+  }
+}
+
+// Fetch profile on mount
+const fetchProfileData = async () => {
+  try {
+    const res = await axios.get('api/profile/get')
+    if (res.data.status === true) {
+      showEmailField.value = true
+      profileData.value = res.data.data
+    } else {
+      errorToast(res.data.data)
+    }
+  } catch (error) {
+    console.error('Fetch Error:', error)
+    errorToast('Unable to load profile.')
+  }
+}
+
+const createProfile = async () => {
+  if (loading.value) return
+  loading.value = true
+
+  try {
+    const formData = new FormData()
+    formData.append('name', profileData.value.name)
+    formData.append('phone', profileData.value.phone)
+    formData.append('address', profileData.value.address)
+    if (profileFile.value) {
+      formData.append('img', profileFile.value)
+    }
+
+    const res = await axios.post('api/profile/create', formData)
+    if (res.data.status === true) {
+      successToast(res.data.data)
+      fetchProfileData()
+    } else {
+      errorToast(res.data.data)
+    }
+  } catch (error) {
+    console.error('Create Error:', error)
+    errorToast(error?.response?.data?.data)
+  } finally {
+    loading.value = false
+  }
+}
+
+const updateProfile = async () => {
+  if (loading.value) return
+  loading.value = true
+
+  try {
+    const formData = new FormData()
+    formData.append('name', profileData.value.name)
+    formData.append('phone', profileData.value.phone)
+    formData.append('address', profileData.value.address)
+    formData.append('email', profileData.value.email)
+    if (profileFile.value) {
+      formData.append('img', profileFile.value)
+    }
+
+    const res = await axios.post('api/profile/update', formData)
+    if (res.data.status === true) {
+      successToast(res.data.data)
+      if (res.data.reload === true) {
+        setTimeout(() => router.visit('/LoginForm'), 1000)
+      } else {
+        fetchProfileData()
+      }
+    } else {
+      errorToast(res.data.data)
+    }
+  } catch (error) {
+    console.error('Update Error:', error)
+    errorToast(error?.response?.data?.data || 'Failed to update profile.')
+  } finally {
+    loading.value = false
+  }
+}
+
+const removeProfile = async () => {
+  if (loading.value) return
+  loading.value = true
+
+  try {
+    const res = await axios.get('api/profile/delete')
+    if (res.data.status === true) {
+      successToast(res.data.data)
+      window.location.reload()
+    } else {
+      errorToast(res.data.data)
+    }
+  } catch (error) {
+    console.error('Remove Error:', error)
+    errorToast(error?.response?.data?.data || 'Failed to remove profile.')
+  } finally {
+    emit('cancel')
+    loading.value = false
+  }
+}
+
+onMounted(fetchProfileData)
 </script>
 
 <template>
-<div v-if="visible" class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <h3>Do you really want to delete this contact?</h3>
-          <div class="modal-body">
-            <p>This action is permanent and cannot be undone. ⚠️</p>
-          </div>
+   <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
 
-          <div class="modal-footer d-flex gap-2 justify-end">
-            <button @click="$emit('cancel')" class="btn btn-secondary"><i class="bi bi-x-circle me-1"></i>Cancel</button>
-            <button @click="handleDelete" class="btn btn-primary">Delete</button>
-          </div>
+        <!-- Profile Image -->
+        <div class="text-center mb-4">
+          <img
+            :src="profileData.img_url"
+            alt="Profile"
+            class="rounded-circle img-thumbnail border"
+            style="width: 100px; height: 100px; object-fit: cover;"
+          />
         </div>
+
+        <!-- Profile Form -->
+        <div class="mb-3">
+          <input type="text" v-model="profileData.name" placeholder="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <input type="text" v-model="profileData.phone" placeholder="Phone" class="form-control" />
+        </div>
+        <div class="mb-3" v-if="showEmailField">
+          <input type="email" v-model="profileData.email" placeholder="Email" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <textarea v-model="profileData.address" placeholder="Address" class="form-control"></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="img" class="form-label">Profile Image</label>
+          <input type="file" @change="handleFileChange" id="img" class="form-control" />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end gap-2">
+          <button
+            v-if="!showEmailField"
+            @click="createProfile"
+            class="btn btn-outline-success"
+            :disabled="loading"
+          >
+            <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+            Create Profile
+          </button>
+          <button
+            v-if="showEmailField"
+            @click="updateProfile"
+            class="btn btn-outline-primary"
+            :disabled="loading"
+          >
+            <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+            Update Profile
+          </button>
+          <button
+            v-if="showEmailField"
+            @click="removeProfile"
+            class="btn btn-outline-danger"
+            :disabled="loading"
+          >
+            <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+            Remove Profile
+          </button>
+        </div>
+
       </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
 
-.modal-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-container {
-  background: #fff;
-  width: 100%;
-  max-width: 450px;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  position: relative;
-  animation: slide-down 0.3s ease-out;
-}
-
-@keyframes slide-down {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.modal-header h3 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  text-align: center;
-}
-
-.modal-body {
-  margin-top: 20px;
-}
-
-.modal-body input {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  background: #f9f9f9;
-  transition: border-color 0.2s;
-}
-
-.modal-body input:focus {
-  border-color: #4f46e5; /* Indigo tone */
-  outline: none;
-  background: #fff;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.modal-footer button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.modal-footer .btn-secondary {
-  background-color: #e0e0e0;
-  border: none;
-  color: #333;
-}
-
-.modal-footer .btn-primary {
-  background-color: #4f46e5;
-  border: none;
-  color: #fff;
-}
-
-.modal-footer .btn-secondary:hover {
-  background-color: #d5d5d5;
-}
-
-.modal-footer .btn-primary:hover {
-  background-color: #4338ca;
-}
 </style>

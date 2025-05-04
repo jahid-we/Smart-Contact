@@ -38,7 +38,7 @@ Route::middleware(['sessionAuth', 'web'])
 // =========================================================
 // =============== User Profile Routes ====================
 // =========================================================
-Route::middleware('sessionAuth')
+Route::middleware(['sessionAuth', 'web'])
     ->controller(userProfileController::class)
     ->prefix('profile')
     ->name('profile.')

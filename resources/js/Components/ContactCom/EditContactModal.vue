@@ -1,200 +1,120 @@
 <script setup>
-  import { reactive, watch } from 'vue'
-  import axios from 'axios'
-  import { successToast, errorToast } from '@/utils/toast'
+import { reactive, ref, watch } from 'vue'
+import axios from 'axios'
+import { successToast, errorToast } from '@/utils/toast'
 
-  const props = defineProps({
-    visible: Boolean,
-    contact: Object, // coming from parent
-  })
+const props = defineProps({
+  visible: Boolean,
+  contact: Object,
+})
 
-  const emit = defineEmits(['cancel', 'updated'])
+const emit = defineEmits(['cancel', 'updated'])
 
-  const localContact = reactive({
-    id: '',
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    nationality: '',
-    gender: '',
-    dob: '',
-    designation: '',
-  })
+const localContact = reactive({
+  id: '',
+  name: '',
+  phone: '',
+  email: '',
+  address: '',
+  nationality: '',
+  gender: '',
+  dob: '',
+  designation: '',
+})
 
-  // Sync when modal opens
-  watch(
-    () => props.contact,
-    (newContact) => {
-      if (newContact) {
-        Object.assign(localContact, newContact)
-      }
-    },
-    { immediate: true, deep: true }
-  )
+const isUpdating = ref(false)
 
-  const handleUpdate = async () => {
-    if (!localContact.name || !localContact.phone || !localContact.email) {
-      errorToast('Please fill in all required fields')
-      return
-    }
+watch(
+  () => props.contact,
+  (newContact) => {
+    if (newContact) Object.assign(localContact, newContact)
+  },
+  { immediate: true, deep: true }
+)
 
-    try {
-      const res = await axios.post(`api/contact/update/${localContact.id}`, localContact)
-
-      if (res.data.status === true) {
-        successToast(res.data.data)
-        emit('updated') // trigger parent to refresh and close modal
-      } else {
-        errorToast(res.data.data)
-      }
-    } catch (error) {
-      console.error('Update Error:', error)
-      errorToast(
-        error?.response?.data?.data || 'Failed to update contact.'
-      )
-    }
+const handleUpdate = async () => {
+  if (!localContact.name || !localContact.phone || !localContact.email) {
+    errorToast('Please fill in all required fields')
+    return
   }
-  </script>
+
+  isUpdating.value = true
+  try {
+    const res = await axios.post(`api/contact/update/${localContact.id}`, localContact)
+    if (res.data.status === true) {
+      successToast(res.data.data)
+      emit('updated')
+    } else {
+      errorToast(res.data.data)
+    }
+  } catch (error) {
+    errorToast(error?.response?.data?.data || 'Failed to update contact.')
+  } finally {
+    isUpdating.value = false
+  }
+}
+</script>
 <template>
-    <div v-if="visible" class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <h3>Edit Contact</h3>
-
-          <div class="modal-body">
-            <input v-model="localContact.name" placeholder="Name" class="form-control mb-2" />
-            <input v-model="localContact.phone" placeholder="Phone" class="form-control mb-2" />
-            <input v-model="localContact.email" placeholder="Email" class="form-control mb-2" />
-            <input v-model="localContact.address" placeholder="Address" class="form-control mb-2" />
-            <input v-model="localContact.nationality" placeholder="Nationality" class="form-control mb-2" />
-            <select v-model="localContact.gender" class="form-control mb-2">
-              <option disabled value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-            <input v-model="localContact.dob" type="date" class="form-control mb-2" />
-            <input v-model="localContact.designation" placeholder="Designation" class="form-control mb-2" />
+    <div v-if="visible" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 rounded-3 shadow">
+        <div class="modal-header bg-light border-0">
+          <h5 class="modal-title fw-bold">Edit Contact</h5>
+          <button type="button" class="btn-close" @click="$emit('cancel')"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <input v-model="localContact.name" placeholder="Name" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <input v-model="localContact.phone" placeholder="Phone" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <input v-model="localContact.email" placeholder="Email" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <input v-model="localContact.address" placeholder="Address" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <input v-model="localContact.nationality" placeholder="Nationality" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <select v-model="localContact.gender" class="form-select">
+                <option disabled value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <input v-model="localContact.dob" type="date" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <input v-model="localContact.designation" placeholder="Designation" class="form-control" />
+            </div>
           </div>
-
-          <div class="modal-footer d-flex gap-2 justify-end">
-            <button @click="$emit('cancel')" class="btn btn-secondary"><i class="bi bi-x-circle me-1"></i>Cancel</button>
-            <button @click="handleUpdate" class="btn btn-primary">Update</button>
-          </div>
+        </div>
+        <div class="modal-footer border-0 justify-content-end">
+          <button class="btn btn-outline-secondary" @click="$emit('cancel')">
+            <i class="bi bi-x-circle me-1"></i>Cancel
+          </button>
+          <button class="btn btn-primary" @click="handleUpdate" :disabled="isUpdating">
+            <span v-if="isUpdating">
+              <span class="spinner-border spinner-border-sm me-1"></span>
+              Updating...
+            </span>
+            <span v-else>
+              <i class="bi bi-pencil-square me-1"></i>Update Contact
+            </span>
+          </button>
         </div>
       </div>
     </div>
+  </div>
   </template>
 
 
 
 <style scoped>
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.modal-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-container {
-  background: #fff;
-  width: 100%;
-  max-width: 450px;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  position: relative;
-  animation: slide-down 0.3s ease-out;
-}
-
-@keyframes slide-down {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.modal-header h3 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  text-align: center;
-}
-
-.modal-body {
-  margin-top: 20px;
-}
-
-.modal-body input {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  background: #f9f9f9;
-  transition: border-color 0.2s;
-}
-
-.modal-body input:focus {
-  border-color: #4f46e5; /* Indigo tone */
-  outline: none;
-  background: #fff;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.modal-footer button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.modal-footer .btn-secondary {
-  background-color: #e0e0e0;
-  border: none;
-  color: #333;
-}
-
-.modal-footer .btn-primary {
-  background-color: #4f46e5;
-  border: none;
-  color: #fff;
-}
-
-.modal-footer .btn-secondary:hover {
-  background-color: #d5d5d5;
-}
-
-.modal-footer .btn-primary:hover {
-  background-color: #4338ca;
-}
-
 </style>

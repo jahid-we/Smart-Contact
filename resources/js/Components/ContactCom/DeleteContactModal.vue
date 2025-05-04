@@ -1,63 +1,75 @@
 <script setup>
-  import {ref, watch } from 'vue'
-  import axios from 'axios'
-  import { successToast, errorToast } from '@/utils/toast'
+  import { ref, watch } from 'vue'
+import axios from 'axios'
+import { successToast, errorToast } from '@/utils/toast'
 
-  const props = defineProps({
-    visible: Boolean,
-    deleteId: Number, // coming from parent
-  })
+const props = defineProps({
+  visible: Boolean,
+  deleteId: Number,
+})
+const emit = defineEmits(['cancel', 'deleted'])
 
-  const newDeleteId = ref(null);
+const newDeleteId = ref(null)
+const isDeleting = ref(false)
 
- const emit = defineEmits(['cancel', 'deleted']);
+watch(
+  () => props.deleteId,
+  (newId) => {
+    if (newId) newDeleteId.value = newId
+  },
+  { immediate: true }
+)
 
- watch(
-    () => props.deleteId,
-    (newId) => {
-      if (newId) {
-        newDeleteId.value = newId
-      }
-    },
-    { immediate: true, deep: true }
-  )
-
-  const handleDelete = async () => {
-    try {
-      const res = await axios.post('api/contact/delete',{ id: newDeleteId.value });
-      if (res.data.status === true) {
-        successToast(res.data.data)
-        emit('deleted') // trigger parent to refresh and close modal
-      } else {
-        errorToast(res.data.data)
-      }
-    } catch (error) {
-      console.error('Delete Error:', error)
-      errorToast(
-        error?.response?.data?.data || 'Failed to delete contact.'
-      )
+const handleDelete = async () => {
+  if (!newDeleteId.value) return
+  isDeleting.value = true
+  try {
+    const res = await axios.post('api/contact/delete', { id: newDeleteId.value })
+    if (res.data.status === true) {
+      successToast(res.data.data)
+      emit('deleted')
+    } else {
+      errorToast(res.data.data)
     }
+  } catch (error) {
+    errorToast(error?.response?.data?.data || 'Failed to delete contact.')
+  } finally {
+    isDeleting.value = false
   }
+}
 
 
 </script>
 
 <template>
- <div v-if="visible" class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <h3>Do you really want to delete this contact?</h3>
-          <div class="modal-body">
-            <p>This action is permanent and cannot be undone. ⚠️</p>
-          </div>
-
-          <div class="modal-footer d-flex gap-2 justify-end">
-            <button @click="$emit('cancel')" class="btn btn-secondary"><i class="bi bi-x-circle me-1"></i>Cancel</button>
-            <button @click="handleDelete" class="btn btn-primary">Delete</button>
-          </div>
+ <div v-if="visible" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-3">
+        <div class="modal-header bg-light border-bottom-0">
+          <h5 class="modal-title text-danger fw-bold">Confirm Deletion</h5>
+          <button type="button" class="btn-close" @click="$emit('cancel')"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="mb-2">Do you really want to delete this contact?</p>
+          <p class="text-danger small">This action is permanent and cannot be undone. ⚠️</p>
+        </div>
+        <div class="modal-footer justify-content-end border-top-0">
+          <button type="button" class="btn btn-outline-secondary" @click="$emit('cancel')">
+            <i class="bi bi-x-circle me-1"></i>Cancel
+          </button>
+          <button type="button" class="btn btn-danger" @click="handleDelete" :disabled="isDeleting">
+            <span v-if="isDeleting">
+              <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              Deleting...
+            </span>
+            <span v-else>
+              <i class="bi bi-trash me-1"></i>Delete
+            </span>
+          </button>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <style scoped>

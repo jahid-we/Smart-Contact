@@ -6,10 +6,19 @@ use Illuminate\Http\JsonResponse;
 
 class ResponseHelper
 {
-    public static function Out(bool $status, $data, int $code): JsonResponse
+    public static function Out(bool $status, $data, int $code, $reload = null): JsonResponse
     {
+        $response = [
+            'status' => $status,
+            'data' => $data,
+        ];
 
-        return response()->json(['status' => $status, 'data' => $data], $code);
+        // Only include reload key if it's not null
+        if (!is_null($reload)) {
+            $response['reload'] = $reload;
+        }
 
+        return response()->json($response, $code);
     }
 }
+

@@ -1,14 +1,30 @@
 <script setup>
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import UserProfileComp from '../UserProfileComp/UserProfileComp.vue';
+import { router } from "@inertiajs/vue3";
+import axios from 'axios'
+import { successToast, errorToast } from '@/utils/toast'
 defineProps(['toggleSidebar']);
 
-const profileModalVisible = ref(false);
 
-const handleProfile = () => {
-  profileModalVisible.value = true;
-};
+// Logout function Start
+const logout = async () => {
+  try {
+    const response = await axios.get('/api/auth/logout');
+    if (response.data.status === true) {
+      successToast(response.data.data);
+      setTimeout(() => {
+                router.visit("/LoginForm");
+            }, 1000);
+    } else {
+      errorToast(response.data.data);
+    }
+  } catch (error) {
+    console.error('Logout Error:', error);
+    errorToast(error?.response?.data?.data || 'Failed to logout.');
+  }
+}
+// Logout function End
 
 </script>
 
@@ -31,14 +47,13 @@ const handleProfile = () => {
               <i class="bi bi-person-circle me-1"></i>Admin
             </Link>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><Link @click.prevent="handleProfile" class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</Link></li>
+              <li><Link  class="dropdown-item" href="/userProfile"><i class="bi bi-person me-2"></i>Profile</Link></li>
               <li><hr class="dropdown-divider" /></li>
               <li>
-                <form method="POST" action="/logout">
-                  <button class="dropdown-item" type="submit">
+
+                  <button class="dropdown-item" @click="logout">
                     <i class="bi bi-box-arrow-right me-2"></i>Logout
                   </button>
-                </form>
               </li>
             </ul>
           </li>
@@ -46,12 +61,6 @@ const handleProfile = () => {
       </div>
     </div>
   </nav>
- <user-profile-comp
-  :visible="profileModalVisible"
-  @cancel="profileModalVisible = false"
-  @updated="() => { profileModalVisible = false }"
-  @created="() => { profileModalVisible = false}"
- />
 </template>
 
 <style scoped>

@@ -148,12 +148,19 @@ class UserProfileService
 
             // Update email if needed
             $emailUpdated = $this->updateEmailIfChanged($user, $validated['email'] ?? null);
+            // update profile email
+            if ($emailUpdated) {
+                $profile->update(['email' => $validated['email']]);
+            }
 
             DB::commit();
 
             if ($emailUpdated) {
-                return ResponseHelper::Out(true, 'Email And Profile updated. Please log in again.', 200)
-                    ->cookie('token', '', -1);
+                $user->update(['is_logged_in' => false]);
+                $request->session()->forget('email');
+                $request->session()->forget('role');
+                $request->session()->forget('id');
+                return ResponseHelper::Out(true, 'Email And Profile updated. Please log in again.', 200,true);
             }
 
             return ResponseHelper::Out(true, 'Profile updated successfully', 200);
