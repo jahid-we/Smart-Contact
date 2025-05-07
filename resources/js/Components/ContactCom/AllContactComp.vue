@@ -32,6 +32,9 @@ const editContact = ref({
 const contacts = ref([])
 const deleteId=ref(null)
 const search = ref('')
+const searchField = ref('') // Select field to search
+const loading = ref(false)
+
 
 // Table headers
 const headers = [
@@ -105,14 +108,28 @@ onMounted(() => {
 <template>
   <div>
     <div  class="space-y-4">
-        <Button @click="handleCreate"  class="btn btn-primary mb-3">Add New Contact</Button>
-      <!-- Search Input -->
-      <input
-        v-model="search"
-        type="text"
-        placeholder="Search contacts..."
-        class="form-control mb-3 stylish-input"
-      />
+        <Button  class="btn btn-info disabled mb-3">All Contact</Button>
+        <Button @click="handleCreate"  class="btn btn-primary mb-3 mx-3">Add New Contact</Button>
+        <div class="flex gap-3 mb-3">
+  <!-- Select Field to Search By -->
+  <select v-model="searchField" class="form-select stylish-input mb-3" style="max-width: 150px;">
+    <option disabled value="">Default</option>
+    <option value="email">Email</option>
+    <option value="phone">phone</option>
+    <option value="Gender">Gender</option>
+    <option value="designation">Designation</option>
+    <option value="nationality">Nationality</option>
+    <option value="dob">Date of Birth</option>
+  </select>
+
+  <!-- Search Input -->
+  <input
+    v-model="search"
+    type="text"
+    placeholder="Search..."
+    class="form-control stylish-input"
+  />
+</div>
 
       <!-- Easy Data Table -->
       <EasyDataTable
@@ -120,6 +137,7 @@ onMounted(() => {
         :headers="headers"
         :items="contacts"
         :search-value="search"
+        :search-field="searchField"
         :rows-per-page="10"
         show-index
         table-class-name="custom-table"

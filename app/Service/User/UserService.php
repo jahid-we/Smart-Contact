@@ -20,11 +20,13 @@ class UserService
     {
         try {
             $role = strtolower($request->header('role'));
+            $userEmail = $request->header('email');
 
             if ($role !== 'admin') {
                 return ResponseHelper::Out(false, 'Unauthorized', 401);
             }
-            $users = User::all();
+
+            $users= User::where('email','!=',$userEmail)->get();
 
             return ResponseHelper::Out(true, $users, 200);
         } catch (Exception $e) {

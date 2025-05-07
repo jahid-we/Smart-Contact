@@ -24,7 +24,7 @@ const handleDelete = async () => {
   if (!newDeleteId.value) return
   isDeleting.value = true
   try {
-    const res = await axios.post('api/contact/delete', { id: newDeleteId.value })
+    const res = await axios.post('api/user/delete-user', { id: newDeleteId.value })
     if (res.data.status === true) {
       successToast(res.data.data)
       emit('deleted')
@@ -32,17 +32,15 @@ const handleDelete = async () => {
       errorToast(res.data.data)
     }
   } catch (error) {
-    errorToast(error?.response?.data?.data || 'Failed to delete contact.')
+    errorToast(error?.response?.data?.data || 'Failed to delete user.')
   } finally {
     isDeleting.value = false
   }
 }
-
-
 </script>
 
 <template>
- <div v-if="visible" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+<div v-if="visible" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow rounded-3">
         <div class="modal-header bg-light border-bottom-0">
@@ -50,7 +48,7 @@ const handleDelete = async () => {
           <button type="button" class="btn-close" @click="$emit('cancel')"></button>
         </div>
         <div class="modal-body text-center">
-          <p class="mb-2">Do you really want to delete this contact?</p>
+          <p class="mb-2">Do you really want to delete this User?</p>
           <p class="text-danger small">This action is permanent and cannot be undone. ⚠️</p>
         </div>
         <div class="modal-footer justify-content-end border-top-0">

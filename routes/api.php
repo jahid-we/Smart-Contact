@@ -53,7 +53,7 @@ Route::middleware(['sessionAuth', 'web'])
 // =========================================================
 // =============== User Management Routes ====================
 // =========================================================
-Route::middleware(['sessionAuth', 'admin'])
+Route::middleware(['sessionAuth', 'web'])
     ->controller(userController::class)
     ->prefix('user')
     ->name('user.')

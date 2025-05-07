@@ -20,7 +20,7 @@ import { Link } from '@inertiajs/vue3'
         </Link>
       </li>
       <li class="nav-item mb-2">
-        <Link class="nav-link text-white" href="/clients">
+        <Link class="nav-link text-white" href="/userPage">
           <i class="bi bi-people me-2"></i>User
         </Link>
       </li>
