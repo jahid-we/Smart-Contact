@@ -36,6 +36,39 @@ class UserService
     }
     // Get All User End ************************************
 
+    // Get All User By Id Start ************************************
+    /**
+     * Get user by ID.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserById($request)
+    {
+        try {
+            $role = strtolower($request->header('role'));
+
+            if ($role !== 'admin') {
+                return ResponseHelper::Out(false, 'Unauthorized', 401);
+            }
+
+            $validated = $request->validate([
+                'id' => 'required|integer|exists:users,id',
+            ]);
+
+            $user = User::find($validated['id']);
+
+            return ResponseHelper::Out(true, $user, 200);
+        } catch (ValidationException $ve) {
+            $firstError = collect($ve->validator->errors()->all())->first();
+
+            return ResponseHelper::Out(false, $firstError ?? 'Validation failed', 422);
+        } catch (Exception $e) {
+            return ResponseHelper::Out(false, 'Something went wrong', 500);
+        }
+    }
+    // Get All User By Id End ************************************
+
     // Get All Admin Start ************************************
     /**
      * Get all admin users.

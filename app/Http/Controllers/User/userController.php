@@ -24,6 +24,13 @@ class userController extends Controller
     }
     // Get All User End ************************************
 
+    // Get All User By Id Start ************************************
+    public function getUserById(Request $request)
+    {
+        return $this->UserService->getUserById($request);
+    }
+    // Get All User By Id End ************************************
+
     // Get All Admin Start ************************************
     public function getAllAdmin(Request $request)
     {

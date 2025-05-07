@@ -21,6 +21,12 @@ const createModalVisible = ref(false)
 const updateModalVisible = ref(false)
 const deleteModalVisible = ref(false)
 const deleteId = ref(null)
+const updateUser = ref({
+  id: '',
+  email: '',
+  role: '',
+  is_logged_in: '',
+})
 
 // Table headers
 const headers = [
@@ -47,10 +53,29 @@ const handleCreate = () => {
   createModalVisible.value = true
 }
 
-// Dummy handlers for action buttons
-const handleEdit = (id) => {
-  console.log('Edit user', id)
+// Update Modal Open
+const handleUpdate = async (id) => {
+    if (!id) {
+        console.error("No valid id provided for updating");
+        return;
+    }
+    try {
+        const response = await axios.get('api/user/user-by-id', {
+            params: { id: id }
+        });
+        if (response.data.status === true && response.data.data) {
+            updateUser.value = response.data.data ;
+            updateModalVisible.value = true;
+        } else {
+            errorToast('Failed to fetch User details.');
+        }
+    } catch (error) {
+        console.error('Fetch Single user Error:', error);
+        errorToast('Something went wrong while fetching User.');
+    }
 }
+
+// Handle delete action
 const handleDelete = (id) => {
     deleteModalVisible.value = true
     deleteId.value = id
@@ -109,7 +134,7 @@ onMounted(() => {
         <!-- Action Buttons -->
         <template #item-action="{ id }">
           <div class="d-flex align-items-center gap-2 justify-center">
-            <button @click="handleEdit(id)" class="btn btn-sm btn-outline-primary">
+            <button @click="handleUpdate(id)" class="btn btn-sm btn-outline-primary">
               <i class="bi bi-pencil"></i>
             </button>
             <button @click="handleDelete(id)" class="btn btn-sm btn-outline-danger">
@@ -130,6 +155,7 @@ onMounted(() => {
     <!-- Update Modal -->
     <update-user-modal
       :visible="updateModalVisible"
+      :user="updateUser"
       @cancel="updateModalVisible = false"
       @updated="() => { updateModalVisible = false; fetchUsers(); }"
     />

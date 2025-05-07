@@ -60,6 +60,7 @@ Route::middleware(['sessionAuth', 'web'])
     ->group(function () {
         // Get All
         Route::get('/all-user', 'getAllUser');
+        Route::get('/user-by-id', 'getUserById');
         Route::get('/all-admin', 'getAllAdmin');
         Route::get('/all-editor', 'getAllEditor');
         Route::get('/all-viewer', 'getAllNormalUser');
