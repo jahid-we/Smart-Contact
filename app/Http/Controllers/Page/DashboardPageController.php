@@ -17,5 +17,4 @@ class DashboardPageController extends Controller
     }
     // Dashboard Page End ********************************
 
-   
 }

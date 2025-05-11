@@ -15,7 +15,7 @@ class ContactSeeder extends Seeder
         for ($i = 1; $i <= 100; $i++) {
             Contact::create([
                 'name' => "User {$i}",
-                'phone' => '01' . rand(100000000, 999999999),
+                'phone' => '01'.rand(100000000, 999999999),
                 'email' => "user{$i}@example.com",
                 'address' => "{$i} Example Street, City, Country",
                 'nationality' => fake()->country(),

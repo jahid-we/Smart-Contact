@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Page;
 
-use Inertia\Inertia;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserPageController extends Controller
 {

@@ -109,8 +109,8 @@ class ContactService
             // Validate input
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:contacts,email,' . $contactId,
-                'phone' => 'nullable|string|max:20|unique:contacts,phone,' . $contactId,
+                'email' => 'required|email|unique:contacts,email,'.$contactId,
+                'phone' => 'nullable|string|max:20|unique:contacts,phone,'.$contactId,
                 'address' => 'nullable|string|max:255',
                 'nationality' => 'nullable|string|max:100',
                 'gender' => 'nullable|in:male,female,other',

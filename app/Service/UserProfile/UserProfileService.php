@@ -160,7 +160,8 @@ class UserProfileService
                 $request->session()->forget('email');
                 $request->session()->forget('role');
                 $request->session()->forget('id');
-                return ResponseHelper::Out(true, 'Email And Profile updated. Please log in again.', 200,true);
+
+                return ResponseHelper::Out(true, 'Email And Profile updated. Please log in again.', 200, true);
             }
 
             return ResponseHelper::Out(true, 'Profile updated successfully', 200);

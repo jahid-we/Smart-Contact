@@ -14,11 +14,10 @@ class ResponseHelper
         ];
 
         // Only include reload key if it's not null
-        if (!is_null($reload)) {
+        if (! is_null($reload)) {
             $response['reload'] = $reload;
         }
 
         return response()->json($response, $code);
     }
 }
-

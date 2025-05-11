@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Page\HomePageController;
-use App\Http\Controllers\Page\UserPageController;
+use App\Http\Controllers\Page\AuthenticationPageController;
 use App\Http\Controllers\Page\ContactPageController;
 use App\Http\Controllers\Page\DashboardPageController;
+use App\Http\Controllers\Page\HomePageController;
+use App\Http\Controllers\Page\UserPageController;
 use App\Http\Controllers\Page\UserProfilePageController;
-use App\Http\Controllers\Page\AuthenticationPageController;
+use Illuminate\Support\Facades\Route;
 
 // =========================================================
 // =============== Home Page  Routes ====================

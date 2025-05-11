@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Page;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class HomePageController extends Controller
 {
@@ -16,9 +16,9 @@ class HomePageController extends Controller
         $email = $request->header('email');
         $id = $request->header('id');
         $user = User::where('email', $email)
-                ->where('id', $id)
-                ->select('is_logged_in')
-                ->first();
+            ->where('id', $id)
+            ->select('is_logged_in')
+            ->first();
 
         return Inertia::render('HomePage', ['is_logged_in' => $user->is_logged_in ?? false]);
     }

@@ -38,8 +38,8 @@ class AuthService
             $user = User::firstOrNew(['email' => $userEmail]);
 
             // If new, assign role
-            if (!$user->exists) {
-            $user->role = $adminEmail === $userEmail ? 'admin' : 'user';
+            if (! $user->exists) {
+                $user->role = $adminEmail === $userEmail ? 'admin' : 'user';
             }
 
             $user->otp = $OTP;
@@ -88,6 +88,7 @@ class AuthService
                     $request->session()->put('email', $userEmail);
                     $request->session()->put('role', $user->role);
                     $request->session()->put('id', $user->id);
+
                     return ResponseHelper::Out(true, 'OTP Verified', 200);
 
                 } else {
@@ -123,8 +124,10 @@ class AuthService
                 $request->session()->forget('email');
                 $request->session()->forget('role');
                 $request->session()->forget('id');
+
                 return ResponseHelper::Out(true, 'Logout Success', 200);
             }
+
             return ResponseHelper::Out(false, 'Logout Failed', 500);
         } catch (Exception $e) {
             return ResponseHelper::Out(false, 'Logout Failed', 500);
