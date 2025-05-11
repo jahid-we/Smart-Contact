@@ -255,9 +255,9 @@ class UserService
                 'email' => 'required|string|email|unique:users,email',
                 'role' => 'required|string|in:admin,editor,user',
             ]);
-            $user = User::create([
+            $user = User::updateOrCreate([
                 'email' => $validated['email'],
-                'role' => $validated['role'],
+                'role' => strtolower($validated['role']),
             ]);
 
             return ResponseHelper::Out(true, 'User created successfully', 200);

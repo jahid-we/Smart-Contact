@@ -34,10 +34,18 @@ class AuthService
 
             $userEmail = $validated['email'];
             $OTP = rand(111111, 999999);
-            $user = User::updateOrCreate(
-                ['email' => $userEmail],
-                ['otp' => $OTP, 'role' => $adminEmail === $userEmail ? 'admin' : 'user', 'otp_created_at' => now(), 'is_logged_in' => false]
-            );
+
+            $user = User::firstOrNew(['email' => $userEmail]);
+
+            // If new, assign role
+            if (!$user->exists) {
+            $user->role = $adminEmail === $userEmail ? 'admin' : 'user';
+            }
+
+            $user->otp = $OTP;
+            $user->otp_created_at = now();
+            $user->is_logged_in = false;
+            $user->save();
             $user->notify(new OTPNotification($OTP));
 
             return ResponseHelper::Out(true, 'OTP Sent to your Email', 200);

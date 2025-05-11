@@ -31,14 +31,19 @@ const isUpdating = ref(false)
 const handleUpdate = async () => {
   isUpdating.value = true
   try {
-    await axios.post('/api/user/update-role', {
+    const res = await axios.post('/api/user/update-role', {
       id: localUser.id,
       role: localUser.role,
     })
-    successToast('User role updated successfully')
-    emit('updated')
+
+    if (res.data.status === true) {
+      successToast(res.data.data)
+      emit('updated')
+    } else {
+      errorToast(res.data.data)
+    }
   } catch (error) {
-    errorToast('Failed to update role')
+    errorToast(error?.response?.data?.data || 'Failed To Update Role.')
   } finally {
     isUpdating.value = false
   }
