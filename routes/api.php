@@ -1,10 +1,13 @@
 <?php
 
-use App\Http\Controllers\authentication\authController;
-use App\Http\Controllers\Contact\contactController;
-use App\Http\Controllers\User\userController;
-use App\Http\Controllers\UserProfile\userProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\userController;
+use App\Http\Controllers\Pdf\ContactPdfController;
+use App\Http\Controllers\Contact\contactController;
+use App\Http\Controllers\Excel\UserExcelController;
+use App\Http\Controllers\Excel\ContactExcelController;
+use App\Http\Controllers\authentication\authController;
+use App\Http\Controllers\UserProfile\userProfileController;
 
 // =====================================================
 // =============== Authentication Routes ===============
@@ -80,4 +83,39 @@ Route::middleware(['sessionAuth', 'web'])
         // Delete
         Route::post('/delete-user', 'deleteUser');
 
+    });
+
+
+// =========================================================
+// =============== Excel Contacts Export  Routes ====================
+// =========================================================
+Route::middleware(['sessionAuth', 'web'])
+    ->controller(ContactExcelController::class)
+    ->prefix('contact')
+    ->name('excel.')
+    ->group(function () {
+        Route::get('/export', 'export')->name('export');
+        Route::post('/import', 'import')->name('import');
+    });
+
+// =========================================================
+// =============== Excel Users Export  Routes ====================
+// =========================================================
+Route::middleware(['sessionAuth', 'web'])
+    ->controller(UserExcelController::class)
+    ->prefix('user')
+    ->name('excel.')
+    ->group(function () {
+        Route::get('/export', 'export')->name('export');
+    });
+
+// =========================================================
+// ===============  Contact PDF Related Routes ====================
+// =========================================================
+Route::middleware(['sessionAuth', 'web'])
+    ->controller(ContactPdfController::class)
+    ->prefix('contact')
+    ->name('pdf.')
+    ->group(function () {
+        Route::get('/export-pdf', 'exportPdf')->name('exportPdf');
     });

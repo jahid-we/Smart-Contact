@@ -1,5 +1,6 @@
 <!-- resources/js/Layouts/DashboardLayoutComp.vue -->
 <script setup>
+import FooterComp from '@/Components/FooterComp.vue'
 import SidebarComp from '../Components/DashboardComp/SidebarComp.vue'
 import TopNavbarDashboardComp from '../Components/DashboardComp/TopNavbarComp.vue'
 import { ref } from 'vue'
@@ -22,4 +23,5 @@ const toggleSidebar = () => {
       </main>
     </div>
   </div>
+      <FooterComp />
 </template>

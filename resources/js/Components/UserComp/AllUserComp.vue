@@ -81,6 +81,10 @@ const handleDelete = (id) => {
     deleteId.value = id
 }
 
+const exportUser = () => {
+  window.location.href = 'api/user/export'
+}
+
 onMounted(() => {
   fetchUsers()
 })
@@ -91,6 +95,7 @@ onMounted(() => {
     <div class="flex justify-between items-center mb-4">
       <button class="btn btn-info disabled mb-1">All Users</button>
       <button @click="handleCreate" class="btn btn-primary mx-3 mb-1">Create New User</button>
+      <Button @click="exportUser" class="btn btn-success mb-1 mx-3">Export to Excel</Button>
     </div>
 
     <!-- Search Controls -->

@@ -27,6 +27,13 @@ const handleCreate = async () => {
     if (response.data.status === true) {
       successToast(response.data.data)
       emit('created')
+      
+      // 👉 Reset form after success
+      user.value = {
+      email: '',
+      role: 'user'
+    }
+
       return
     }
     errorToast(response.data.data)

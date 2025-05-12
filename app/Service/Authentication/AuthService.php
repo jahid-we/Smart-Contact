@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\authentication;
+namespace App\Service\Authentication;
 
 use App\Helpers\ResponseHelper;
 use App\Models\User;

@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
+import ImportDataModal from './ImportDataModal.vue'
 import CreateContactModal from './CreateContactModal.vue'
 import EditContactModal from './EditContactModal.vue'
 import DeleteContactModal from './DeleteContactModal.vue'
@@ -11,6 +12,8 @@ const EasyDataTable = Vue3EasyDataTable;
 
 import { successToast, errorToast } from "@/utils/toast";
 
+// Modal visibility states
+const importModalVisible = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const deleteModalVisible = ref(false);
@@ -60,11 +63,14 @@ const fetchContacts = async () => {
     loading.value = false
   }
 }
+// Handle Import action
+const handleImport = () => {
+  importModalVisible.value = true;
+};
+
 // Handle Create action
 const handleCreate =() => {
-
     createModalVisible.value = true;
-
 };
 
 // Handle delete action
@@ -99,7 +105,15 @@ const handleEdit = async (id) => {
         errorToast('Something went wrong while fetching contact.');
     }
 }
+// Handle Excel Export
+const exportContacts = () => {
+  window.location.href = 'api/contact/export'
+}
 
+// Handle Pdf Export
+const exportContactsPdf = () => {
+  window.location.href = 'api/contact/export-pdf';
+}
 onMounted(() => {
   fetchContacts()
 })
@@ -110,6 +124,9 @@ onMounted(() => {
     <div  class="space-y-4">
         <Button  class="btn btn-info disabled mb-3">All Contact</Button>
         <Button @click="handleCreate"  class="btn btn-primary mb-3 mx-3">Add New Contact</Button>
+        <Button @click="exportContacts" class="btn btn-success mb-3 mx-3">Export to Excel</Button>
+        <Button @click="exportContactsPdf" class="btn btn-danger mb-3 mx-3">Export to PDF</Button>
+        <Button @click="handleImport" class="btn btn-warning mb-3 mx-3">Import Data</Button>
         <div class="flex gap-3 mb-3">
   <!-- Select Field to Search By -->
   <select v-model="searchField" class="form-select stylish-input mb-3" style="max-width: 150px;">
@@ -155,6 +172,12 @@ onMounted(() => {
         </template>
       </EasyDataTable>
     </div>
+
+<import-data-modal
+  :visible="importModalVisible"
+  @cancel="importModalVisible = false"
+  @imported="() => { importModalVisible = false; fetchContacts(); }"
+  />
 
  <create-contact-modal
   :visible="createModalVisible"

@@ -130,7 +130,7 @@ onMounted(fetchProfileData)
 <template>
    <div class="container py-5">
     <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
+      <div class="card py-3 alert alert-primary px-4 col-md-8 col-lg-6">
 
         <!-- Profile Image -->
         <div class="text-center mb-4">
