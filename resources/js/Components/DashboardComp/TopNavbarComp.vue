@@ -1,11 +1,14 @@
 <script setup>
 import { ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue'
+import { Link } from '@inertiajs/vue3'
+import { usePage} from '@inertiajs/vue3'
 import { router } from "@inertiajs/vue3";
 import axios from 'axios'
 import { successToast, errorToast } from '@/utils/toast'
 defineProps(['toggleSidebar']);
 
+const userRole = computed(() => usePage().props.role)
 
 // Logout function Start
 const logout = async () => {
@@ -44,7 +47,7 @@ const logout = async () => {
               role="button"
               data-bs-toggle="dropdown"
             >
-              <i class="bi bi-person-circle me-1"></i>Admin
+              <i class="bi bi-person-circle me-1"></i>{{ userRole.charAt(0).toUpperCase()+userRole.slice(1).toLowerCase() }}
             </Link>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><Link  class="dropdown-item" href="/userProfile"><i class="bi bi-person me-2"></i>Profile</Link></li>

@@ -38,6 +38,7 @@ class HandleInertiaRequests extends Middleware
     {
         $email = $request->session()->get('email');
         $id = $request->session()->get('id');
+        $role = $request->session()->get('role');
 
         $user = User::where('email', $email)
             ->where('id', $id)
@@ -51,6 +52,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->pull('error'),
             ],
             'is_logged_in' => $user->is_logged_in ?? false,
+            'role' => $role,
         ]);
     }
 }
