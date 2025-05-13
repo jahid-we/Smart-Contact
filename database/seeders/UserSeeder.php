@@ -25,9 +25,57 @@ class UserSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        User::create([
+            'email' => 'editor1@example.com',
+            'role' => 'editor',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'editor2@example.com',
+            'role' => 'editor',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         User::create([
             'email' => 'user@example.com',
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'user2@example.com',
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'user3@example.com',
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'user4@example.com',
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'user5@example.com',
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'user6@example.com',
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::create([
+            'email' => 'user7@example.com',
             'role' => 'user',
             'created_at' => now(),
             'updated_at' => now(),
