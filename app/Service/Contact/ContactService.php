@@ -164,6 +164,29 @@ class ContactService
 
     // deleteContact End ************************************
 
+    // deleteAllContact Start ************************************
+    /**
+     * Delete all contacts.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteAllContact($request)
+    {
+        try {
+            $role = strtolower($request->header('role'));
+            if (!$role === 'admin') {
+                return ResponseHelper::Out(false, 'Unauthorized', 401);
+            }
+            Contact::truncate();
+
+            return ResponseHelper::Out(true, 'All Contacts Deleted Successfully', 200);
+        } catch (Exception $e) {
+            return ResponseHelper::Out(false, 'Something went wrong', 500);
+        }
+    }
+    // deleteAllContact End ************************************
+
     // Get Contact By ID Start ************************************
 
     /**

@@ -1,41 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
-            position: relative;
-        }
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+    }
 
-        .watermark {
-            position: fixed;
-            top: 35%;
-            left: 10%;
-            width: 90%;
-            text-align: center;
-            font-size: 60px;
-            color: rgba(230, 0, 0, 0.07);
-            transform: rotate(-30deg);
-            z-index: -1;
-            pointer-events: none;
-        }
+    .watermark {
+        position: absolute;
+        top: 40%;
+        left: 10%;
+        width: 80%;
+        text-align: center;
+        font-size: 50px;
+        color: rgba(200, 0, 0, 0.05);
+    }
 
-        /* Example styles for the table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-        th, td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: left;
-        }
-        th {
-            background-color: #f3f3f3;
-        }
-    </style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 5px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
 </head>
 <body>
 

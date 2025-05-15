@@ -33,6 +33,7 @@ Route::middleware(['sessionAuth', 'web'])
         Route::get('/list', 'contactList')->name('list');
         Route::post('/update/{id}', 'updateContact')->name('update');
         Route::post('/delete', 'deleteContact')->name('delete');
+        Route::get('/deleteAll', 'deleteAllContact')->name('deleteAll');
         Route::get('/listById', 'contactById')->name('view');
         Route::get('/latest', 'getLatestContact')->name('latest');
         Route::get('/count', 'contactCount')->name('count');

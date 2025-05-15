@@ -5,6 +5,7 @@ import axios from 'axios'
 import ImportDataModal from './ImportDataModal.vue'
 import CreateContactModal from './CreateContactModal.vue'
 import EditContactModal from './EditContactModal.vue'
+import DeleteAllContactModal from './DeleteAllContactModal.vue'
 import DeleteContactModal from './DeleteContactModal.vue'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
 import 'vue3-easy-data-table/dist/style.css'
@@ -17,6 +18,7 @@ const importModalVisible = ref(false);
 const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const deleteModalVisible = ref(false);
+const deleteAllModalVisible = ref(false);
 
 const editContact = ref({
   id:'',
@@ -84,6 +86,11 @@ const handleDelete = async (id) => {
 
 };
 
+// Handle delete all action
+const handleDeleteAll = () => {
+  deleteAllModalVisible.value = true
+}
+
 // Edit Modal Open
 const handleEdit = async (id) => {
     if (!id) {
@@ -122,11 +129,30 @@ onMounted(() => {
 <template>
   <div>
     <div  class="space-y-4">
-        <Button  class="btn btn-info disabled mb-3">All Contact</Button>
-        <Button @click="handleCreate"  class="btn btn-primary mb-3 mx-3">Add New Contact</Button>
-        <Button @click="exportContacts" class="btn btn-success mb-3 mx-3">Export to Excel</Button>
-        <Button @click="exportContactsPdf" class="btn btn-danger mb-3 mx-3">Export to PDF</Button>
-        <Button @click="handleImport" class="btn btn-warning mb-3 mx-3">Import Data</Button>
+       <Button class="btn btn-info disabled shadow mb-3">
+  <i class="bi bi-people-fill me-1"></i> All Contact
+</Button>
+
+<Button @click="handleCreate" class="btn btn-primary shadow mb-3 mx-2">
+  <i class="bi bi-person-plus-fill me-1"></i> Add New Contact
+</Button>
+
+<Button @click="exportContacts" class="btn btn-success shadow mb-3 mx-2">
+  <i class="bi bi-file-earmark-excel-fill me-1"></i> Export to Excel
+</Button>
+
+<Button @click="exportContactsPdf" class="btn btn-light shadow mb-3 mx-2">
+  <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export to PDF
+</Button>
+
+<Button @click="handleImport" class="btn btn-warning shadow mb-3 mx-2">
+  <i class="bi bi-upload me-1"></i> Import Data
+</Button>
+
+<Button @click="handleDeleteAll" class="btn btn-danger shadow mb-3 mx-2">
+  <i class="bi bi-trash-fill me-1"></i> Delete All Contact
+</Button>
+
         <div class="flex gap-3 mb-3">
   <!-- Select Field to Search By -->
   <select v-model="searchField" class="form-select stylish-input mb-3" style="max-width: 150px;">
@@ -197,6 +223,11 @@ onMounted(() => {
     :deleteId="deleteId"
     @cancel="deleteModalVisible = false"
     @deleted="() => { deleteModalVisible = false; fetchContacts(); }"
+ />
+ <delete-all-contact-modal
+        :visible="deleteAllModalVisible"
+        @cancel="deleteAllModalVisible = false"
+        @deleted="() => { deleteAllModalVisible = false; fetchContacts(); }"
  />
 
 </div>

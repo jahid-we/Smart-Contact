@@ -45,6 +45,13 @@ class contactController extends Controller
     }
     // Contact Delete End ***************************************
 
+    // Delete All Contact Start ************************************
+    public function deleteAllContact(Request $request)
+    {
+        return $this->ContactService->deleteAllContact($request);
+    }
+    // Delete All Contact End ***************************************
+
     // Contact List By Id Start ************************************
     public function contactById(Request $request)
     {

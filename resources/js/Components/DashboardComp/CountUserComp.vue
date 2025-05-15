@@ -46,7 +46,7 @@ const renderBarChart = () => {
         data: {
             labels: ['Admin', 'Editor', 'Viewer'],
             datasets: [{
-                label: 'User Bar Count',
+                label: 'User',
                 data: [adminCount.value, editorCount.value, viewerCount.value],
                 backgroundColor: ['#198754', '#ffc107', '#dc3545'],
                 borderRadius: 5
@@ -93,7 +93,7 @@ onMounted(() => {
 
     <!-- Chart Section -->
     <div class="card shadow mb-5">
-      <div class="card-header bg-dark text-white">User Bar Chart</div>
+      <div class="card-header bg-dark text-white">User Chart</div>
       <div class="card-body">
         <canvas ref="chartRef" height="60"></canvas>
       </div>
