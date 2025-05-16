@@ -175,7 +175,7 @@ class ContactService
     {
         try {
             $role = strtolower($request->header('role'));
-            if (!$role === 'admin') {
+            if (! $role === 'admin') {
                 return ResponseHelper::Out(false, 'Unauthorized', 401);
             }
             Contact::truncate();

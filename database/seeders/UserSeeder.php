@@ -19,66 +19,13 @@ class UserSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        User::create([
-            'email' => 'editor@example.com',
-            'role' => 'editor',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'editor1@example.com',
-            'role' => 'editor',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'editor2@example.com',
-            'role' => 'editor',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        User::create([
-            'email' => 'user@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'user2@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'user3@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'user4@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'user5@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'user6@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        User::create([
-            'email' => 'user7@example.com',
-            'role' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        for ($i = 2; $i <= 20; $i++) {
+            User::create([
+                'email' => "user{$i}@example.com",
+                'role' => ['admin', 'editor', 'user'][rand(0, 2)],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }

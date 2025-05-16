@@ -27,7 +27,7 @@ const updateChart = (count) => {
   if (chartInstance.value) chartInstance.value.destroy()
 
   chartInstance.value = new Chart(chartRef.value, {
-    type: 'line',
+    type: 'bar',
     data: {
       labels: ['Total Contacts'],
       datasets: [{
@@ -44,8 +44,11 @@ const updateChart = (count) => {
     options: {
       responsive: true,
       animation: {
-        duration: 1200,
-        easing: 'easeOutQuart',
+        radius: {
+        duration: 400,
+        easing: 'linear',
+        loop: (context) => context.active
+      }
       },
       plugins: {
         title: {
@@ -63,7 +66,7 @@ const updateChart = (count) => {
         y: {
           beginAtZero: true,
           ticks: {
-            stepSize: 25,
+            stepSize: 5,
           },
         },
       },

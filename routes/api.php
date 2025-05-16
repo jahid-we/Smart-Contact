@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\userController;
-use App\Http\Controllers\Pdf\ContactPdfController;
-use App\Http\Controllers\Contact\contactController;
-use App\Http\Controllers\Excel\UserExcelController;
-use App\Http\Controllers\Excel\ContactExcelController;
 use App\Http\Controllers\authentication\authController;
+use App\Http\Controllers\Contact\contactController;
+use App\Http\Controllers\Excel\ContactExcelController;
+use App\Http\Controllers\Excel\UserExcelController;
+use App\Http\Controllers\Pdf\ContactPdfController;
+use App\Http\Controllers\User\userController;
 use App\Http\Controllers\UserProfile\userProfileController;
+use Illuminate\Support\Facades\Route;
 
 // =====================================================
 // =============== Authentication Routes ===============
@@ -85,7 +85,6 @@ Route::middleware(['sessionAuth', 'web'])
         Route::post('/delete-user', 'deleteUser');
 
     });
-
 
 // =========================================================
 // =============== Excel Contacts Export  Routes ====================
