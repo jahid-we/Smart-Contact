@@ -5,11 +5,12 @@ import { computed } from 'vue'
 
 import Vue3EasyDataTable from 'vue3-easy-data-table'
 import 'vue3-easy-data-table/dist/style.css'
-import { successToast, errorToast } from "@/utils/toast";
 import CreateUserModal from './CreateUserModal.vue'
 import UpdateUserModal from './UpdateUserModal.vue'
 import DeleteUserModal from './DeleteUserModal.vue'
 
+import { successToast, errorToast } from "@/utils/toast";
+import { capitalize } from "@/utils/stringFormatter";
 
 const EasyDataTable = Vue3EasyDataTable
 
@@ -40,7 +41,12 @@ const headers = [
 const fetchUsers = async () => {
   try {
     const response = await axios.get('api/user/all-user')
-    users.value = response.data.data
+    users.value = response.data.data.map(user => ({
+      ...user,
+      email: capitalize(user.email),
+      role: capitalize(user.role),
+      is_logged_in: user.is_logged_in,
+    }))
   } catch (error) {
     console.error('Failed to fetch users:', error)
   } finally {

@@ -12,6 +12,7 @@ import 'vue3-easy-data-table/dist/style.css'
 const EasyDataTable = Vue3EasyDataTable;
 
 import { successToast, errorToast } from "@/utils/toast";
+import { capitalize } from "@/utils/stringFormatter";
 
 // Modal visibility states
 const importModalVisible = ref(false);
@@ -58,13 +59,24 @@ const headers = [
 const fetchContacts = async () => {
   try {
     const response = await axios.get('api/contact/list')
-    contacts.value = response.data.data
+   contacts.value = response.data.data.map(contact => ({
+      ...contact,
+      name: capitalize(contact.name),
+      phone: contact.phone,
+      email: contact.email,
+      address: capitalize(contact.address),
+      nationality: capitalize(contact.nationality),
+      gender: capitalize(contact.gender),
+      dob: contact.dob,
+      designation: capitalize(contact.designation),
+    }))
   } catch (error) {
     console.error('Failed to fetch contacts:', error)
   } finally {
     loading.value = false
   }
 }
+
 // Handle Import action
 const handleImport = () => {
   importModalVisible.value = true;
