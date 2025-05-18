@@ -12,7 +12,7 @@ class ContactSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 500; $i++) {
+        for ($i = 1; $i <= 5000; $i++) {
             Contact::create([
                 'name' => "User {$i}",
                 'phone' => '01'.rand(100000000, 999999999),

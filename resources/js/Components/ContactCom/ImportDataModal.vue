@@ -11,6 +11,7 @@ const emit = defineEmits(['cancel', 'imported'])
 
 const selectedFile = ref(null)
 const isUploading = ref(false)
+const uploadProgress = ref(0)
 
 const handleFileChange = (event) => {
   selectedFile.value = event.target.files[0]
@@ -26,10 +27,16 @@ const handleUpload = async () => {
   formData.append('file', selectedFile.value)
 
   isUploading.value = true
+  uploadProgress.value = 0
   try {
     const res = await axios.post('/api/contact/import', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.lengthComputable) {
+          uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        }
       },
     })
 
@@ -44,6 +51,7 @@ const handleUpload = async () => {
   } finally {
     isUploading.value = false
     selectedFile.value = null
+    uploadProgress.value = 0
   }
 }
 </script>
@@ -60,9 +68,16 @@ const handleUpload = async () => {
         </div>
 
         <div class="modal-body">
-          <p class="mb-2">Upload your Excel/CSV file to import contacts:</p>
-          <input type="file" class="form-control" @change="handleFileChange" accept=".xlsx, .csv" />
+        <p class="mb-2">Upload your Excel/CSV file to import contacts:</p>
+        <input type="file" class="form-control" @change="handleFileChange" accept=".xlsx, .csv" />
+
+        <!-- Progress bar shown only while uploading -->
+            <div v-if="isUploading" class="mt-3">
+            <progress class="form-range w-100" :value="uploadProgress" max="100">{{ uploadProgress }}%</progress>
+            <div class="text-center small mt-1">{{ uploadProgress }}%</div>
         </div>
+        </div>
+
 
         <div class="modal-footer justify-content-end border-top-0">
           <button type="button" class="btn btn-outline-secondary" @click="$emit('cancel')">
