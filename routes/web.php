@@ -33,7 +33,6 @@ Route::middleware('guest')->controller(AuthenticationPageController::class)->gro
 Route::middleware('sessionAuth')->controller(DashboardPageController::class)->group(function () {
 
     Route::get('/dashboard', 'Dashboard')->name('dashboard');
-    Route::get('/contact', 'Contact')->name('contact');
 
 });
 // =========================================================

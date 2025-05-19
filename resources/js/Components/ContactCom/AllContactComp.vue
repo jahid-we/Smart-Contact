@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
-
+import { usePage} from '@inertiajs/vue3'
 import ImportDataModal from './ImportDataModal.vue'
 import CreateContactModal from './CreateContactModal.vue'
 import EditContactModal from './EditContactModal.vue'
@@ -20,6 +20,7 @@ const createModalVisible = ref(false);
 const editModalVisible = ref(false);
 const deleteModalVisible = ref(false);
 const deleteAllModalVisible = ref(false);
+const userRole = computed(() => usePage().props.role)
 
 const editContact = ref({
   id:'',
@@ -43,7 +44,7 @@ const loading = ref(false)
 
 
 // Table headers
-const headers = [
+const headers = computed(() => [
   { text: "Name", value: "name" },
   { text: "Phone", value: "phone" },
   { text: "Email", value: "email" },
@@ -52,8 +53,8 @@ const headers = [
   { text: "Gender", value: "gender" },
   { text: "Date of Birth", value: "dob" },
   { text: "Designation", value: "designation" },
-  { text: "Action", value: "action" }, // Action column
-]
+  ...(userRole.value !== 'user' ? [{ text: "Action", value: "action" }] : [])
+]);
 
 // Fetch contacts from API
 const fetchContacts = async () => {
@@ -145,23 +146,23 @@ onMounted(() => {
   <i class="bi bi-people-fill me-1"></i> All Contact
 </Button>
 
-<Button @click="handleCreate" class="btn btn-primary shadow mb-3 mx-2">
+<Button @click="handleCreate" v-if="userRole !== 'user'" class="btn btn-primary shadow mb-3 mx-2">
   <i class="bi bi-person-plus-fill me-1"></i> Add New Contact
 </Button>
 
-<Button @click="exportContacts" class="btn btn-success shadow mb-3 mx-2">
+<Button @click="exportContacts" v-if="userRole !== 'user'" class="btn btn-success shadow mb-3 mx-2">
   <i class="bi bi-file-earmark-excel-fill me-1"></i> Export to Excel
 </Button>
 
-<Button @click="exportContactsPdf" class="btn btn-light shadow mb-3 mx-2">
+<Button @click="exportContactsPdf" v-if="userRole !== 'user'" class="btn btn-light shadow mb-3 mx-2">
   <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export to PDF
 </Button>
 
-<Button @click="handleImport" class="btn btn-warning shadow mb-3 mx-2">
+<Button @click="handleImport" v-if="userRole !== 'user'" class="btn btn-warning shadow mb-3 mx-2">
   <i class="bi bi-upload me-1"></i> Import Data
 </Button>
 
-<Button @click="handleDeleteAll" class="btn btn-danger shadow mb-3 mx-2">
+<Button @click="handleDeleteAll" v-if="userRole !== 'user'" class="btn btn-danger shadow mb-3 mx-2">
   <i class="bi bi-trash-fill me-1"></i> Delete All Contact
 </Button>
 
@@ -198,7 +199,7 @@ onMounted(() => {
         table-class-name="custom-table"
       >
         <!-- Slot for Action Icons -->
-        <template #item-action="{ id }">
+        <template v-if="userRole !== 'user'" #item-action="{ id }">
           <div class="d-flex align-items-center gap-2 justify-center">
             <button @click="handleEdit(id)" class="btn btn-sm btn-outline-primary ">
               <i class="bi bi-pencil"></i>
