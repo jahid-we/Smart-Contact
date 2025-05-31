@@ -167,12 +167,46 @@
 
 ---
 
+## 🛠️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/jahid-we/Smart-Contact.git
+cd freelance-time-tracker
+
+
+# 2. Install Dependencies
+composer install
+
+# 3. Create .env File
+cp .env.example .env
+
+# 4. Generate App Key
+php artisan key:generate
+
+# 5. Migrate and Seed Database
+php artisan migrate --seed
+
+# 6. Start Queue Worker
+php artisan queue:work
+
+# 7. Start Development Server
+composer run dev
+
+```
+
 ## ✅ Notes
 
 - Ensure **sessionAuth** middleware checks are correctly implemented in `Http\Middleware`.
 - OTP mechanism should include **expiration** and **resend logic**.
 - All APIs are **RESTful** and follow **CRUD** patterns.
 - Excel and PDF features depend on **Maatwebsite/Excel** and **DomPDF** packages.
+
+## 🧑‍💻 Developer
+
+**Made by**: Jahid Hasan  
+**Stack**: Laravel 12, Inertia, Vue, Bootstrap 5, 
 
 ## License
 
