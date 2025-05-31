@@ -1,13 +1,12 @@
-
 # 📘 Contact Management Software Documentation
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Laravel 12
-- **Frontend**: Vue.js with Inertia.js
-- **Database**: MySQL (via Laravel Eloquent)
-- **Auth**: OTP-based session authentication
-- **Extras**: Excel & PDF export features
+- **Framework**: Laravel 12  
+- **Frontend**: Vue.js with Inertia.js  
+- **Database**: MySQL (via Laravel Eloquent)  
+- **Auth**: OTP-based session authentication  
+- **Extras**: Excel & PDF export features  
 
 ---
 
@@ -15,8 +14,8 @@
 
 ### 🔐 Authentication
 
-| Endpoint             | Method | Description                     |
-|----------------------|--------|---------------------------------|
+| Endpoint             | Method | Description                    |
+|----------------------|--------|--------------------------------|
 | `/auth/login`        | POST   | Login via email and get OTP    |
 | `/auth/verify-otp`   | POST   | Verify OTP for session auth    |
 | `/auth/logout`       | GET    | Logout the user (requires auth)|
@@ -25,8 +24,8 @@
 
 ### 📇 Contact Management
 
-| Endpoint                        | Method | Description                     |
-|---------------------------------|--------|---------------------------------|
+| Endpoint                        | Method | Description                    |
+|---------------------------------|--------|--------------------------------|
 | `/contact/create`              | POST   | Create a new contact            |
 | `/contact/list`                | GET    | List all contacts               |
 | `/contact/update/{id}`         | POST   | Update contact by ID            |
@@ -120,16 +119,16 @@
 
 ### `users` Table
 
-| Column        | Type     | Description                         |
-|---------------|----------|-------------------------------------|
-| `id`          | BIGINT   | Primary Key                         |
-| `email`       | STRING   | Unique user email                   |
-| `otp`         | STRING   | OTP for login                       |
-| `role`        | ENUM     | Role: admin/editor/user (default)   |
-| `is_logged_in`| BOOLEAN  | Login status                        |
-| `otp_created_at`| TIMESTAMP | When OTP was generated         |
-| `created_at`  | TIMESTAMP| Created timestamp                   |
-| `updated_at`  | TIMESTAMP| Updated timestamp                   |
+| Column         | Type      | Description                         |
+|----------------|-----------|-------------------------------------|
+| `id`           | BIGINT    | Primary Key                         |
+| `email`        | STRING    | Unique user email                   |
+| `otp`          | STRING    | OTP for login                       |
+| `role`         | ENUM      | Role: admin/editor/user (default)   |
+| `is_logged_in` | BOOLEAN   | Login status                        |
+| `otp_created_at` | TIMESTAMP | When OTP was generated            |
+| `created_at`   | TIMESTAMP | Created timestamp                   |
+| `updated_at`   | TIMESTAMP | Updated timestamp                   |
 
 ---
 
@@ -151,19 +150,19 @@
 
 ### `contacts` Table
 
-| Column       | Type    | Description                       |
-|--------------|---------|-----------------------------------|
-| `id`         | BIGINT  | Primary Key                       |
-| `name`       | STRING  | Contact name                      |
-| `phone`      | STRING  | Unique phone number               |
-| `email`      | STRING  | Unique email                      |
-| `address`    | STRING  | Optional                          |
-| `nationality`| STRING  | Optional                          |
-| `gender`     | ENUM    | male/female/other                 |
-| `dob`        | DATE    | Optional                          |
-| `designation`| STRING  | Optional                          |
-| `created_at` | TIMESTAMP |                                 |
-| `updated_at` | TIMESTAMP |                                 |
+| Column        | Type     | Description                       |
+|---------------|----------|-----------------------------------|
+| `id`          | BIGINT   | Primary Key                       |
+| `name`        | STRING   | Contact name                      |
+| `phone`       | STRING   | Unique phone number               |
+| `email`       | STRING   | Unique email                      |
+| `address`     | STRING   | Optional                          |
+| `nationality` | STRING   | Optional                          |
+| `gender`      | ENUM     | male/female/other                 |
+| `dob`         | DATE     | Optional                          |
+| `designation` | STRING   | Optional                          |
+| `created_at`  | TIMESTAMP|                                   |
+| `updated_at`  | TIMESTAMP|                                   |
 
 ---
 
@@ -174,27 +173,62 @@
 ```bash
 git clone https://github.com/jahid-we/Smart-Contact.git
 cd freelance-time-tracker
-
-
-# 2. Install Dependencies
-composer install
-
-# 3. Create .env File
-cp .env.example .env
-
-# 4. Generate App Key
-php artisan key:generate
-
-# 5. Migrate and Seed Database
-php artisan migrate --seed
-
-# 6. Start Queue Worker
-php artisan queue:work
-
-# 7. Start Development Server
-composer run dev
-
 ```
+
+### 2. Install Dependencies
+
+```bash
+composer install
+```
+
+### 3. Create .env File
+
+```bash
+cp .env.example .env
+```
+
+### 4. Generate App Key
+
+```bash
+php artisan key:generate
+```
+
+### 5. Migrate and Seed Database
+
+```bash
+php artisan migrate --seed
+```
+
+### 6. Start Queue Worker
+
+```bash
+php artisan queue:work
+```
+
+### 7. Start Development Server
+
+```bash
+composer run dev
+```
+
+---
+
+### 📧 Mail Configuration
+
+To enable OTP delivery via email, configure your mail settings in the `.env` file:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS=example@example.com
+MAIL_FROM_NAME="Smart Contact"
+```
+
+> ℹ️ **Note**: Replace the above values with your actual SMTP credentials (e.g., Mailtrap, Gmail, etc.).
 
 ## ✅ Notes
 
